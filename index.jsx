@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import patterns from './src/utils';
+import styles from './src/styles/main.postcss';
 
 console.log(new patterns.creational.constructor('game').save());
 
