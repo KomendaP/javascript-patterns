@@ -1,14 +1,20 @@
 // ttp://cssnext.io
+const postcssImport = require('postcss-import');
+const precss = require('precss');
+const cssnext = require('postcss-cssnext');
+const autoprefixer = require('autoprefixer');
+const cssnano = require('cssnano');
 
 module.exports = {
 	plugins: [
-		require('precss'),
-		// vendors for styles
-		require('autoprefixer')({browserslist: ["> 20%"]}),
-
-		// optimization of styles
-		// http://cssnano.co/
-		require('cssnano')({
+		precss,
+		postcssImport,
+		cssnext,
+		// autoprefixer({
+		// 	browserslist: ["> 1%"],
+		// 	grid: false
+		// }),
+		cssnano({
 			preset: 'advanced',
 			comments: { removeAll: true }
 		}),
@@ -25,6 +31,6 @@ module.exports = {
 		}),
 
 		// postcss-browser-reporter
-		require('postcss-browser-reporter')({})
+		// require('postcss-browser-reporter')({})
 	]
 }
