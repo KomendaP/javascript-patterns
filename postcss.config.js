@@ -10,10 +10,10 @@ module.exports = {
 		precss,
 		postcssImport,
 		cssnext,
-		// autoprefixer({
-		// 	browserslist: ["> 1%"],
-		// 	grid: false
-		// }),
+		autoprefixer({
+			browserslist: ["> 1%"],
+			grid: false
+		}),
 		cssnano({
 			preset: 'advanced',
 			comments: { removeAll: true }
