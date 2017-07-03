@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node_modules/.bin/webpack-dev-server",
-    "build": "node_modules/.bin/webpack"
+    "build": "set NODE_ENV=production && node_modules/.bin/webpack -p"
   },
   "keywords": [
     "patterns"
@@ -31,6 +31,7 @@
     "postcss-loader": "^2.0.6",
     "postcss-short": "^4.1.0",
     "precss": "^1.4.0",
+    "rimraf": "^2.6.1",
     "style-loader": "^0.18.2",
     "stylelint-webpack-plugin": "^0.8.0",
     "webpack": "^2.6.1",
