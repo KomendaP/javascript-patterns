@@ -4,8 +4,11 @@
   "description": "Personal patterns store",
   "main": "index.js",
   "scripts": {
+    "server": "node server",
     "start": "node_modules/.bin/webpack-dev-server",
-    "build": "set NODE_ENV=production && node_modules/.bin/webpack -p"
+    "clear": "node \"node_modules/rimraf/bin\" dist",
+    "prebuild": "npm run clear",
+    "build": "cross-env NODE_ENV=production \"node_modules/.bin/webpack\" -p"
   },
   "keywords": [
     "patterns"
@@ -19,11 +22,18 @@
     "babel-preset-env": "^1.5.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "babel-preset-react-hmre": "^1.1.1",
+    "cross-env": "^5.0.1",
     "css-loader": "^0.28.4",
+    "cssnano-preset-advanced": "^4.0.0-rc.0",
     "eslint": "^4.1.1",
+    "eslint-config-google": "^0.8.0",
     "eslint-plugin-react": "^7.1.0",
+    "express": "^4.15.3",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
+    "html-webpack-plugin": "^2.29.0",
+    "open": "0.0.5",
     "postcss-assets": "^4.1.0",
     "postcss-browser-reporter": "^0.5.0",
     "postcss-cssnext": "^2.11.0",
@@ -33,14 +43,25 @@
     "precss": "^1.4.0",
     "rimraf": "^2.6.1",
     "style-loader": "^0.18.2",
-    "stylelint-webpack-plugin": "^0.8.0",
+    "stylelint": "^7.12.0",
+    "stylelint-config-standard": "^16.0.0",
     "webpack": "^2.6.1",
+    "webpack-dev-middleware": "^1.11.0",
     "webpack-dev-server": "^2.5.0"
   },
   "dependencies": {
-    "html-webpack-plugin": "^2.29.0",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "stylelint-webpack-plugin": "^0.8.0"
+    "react-dom": "^15.6.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "google"
+    ],
+    "root": true,
+    "env": {
+      "browser": true,
+      "node": true
+    }
   }
 }

@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-const StyleLintPlugin = require('stylelint-webpack-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 
 /**
@@ -10,12 +9,12 @@ const isProduction = process.env.NODE_ENV === 'production';
  * @constructor
  */
 function WebpackConfig(config) {
+	// pulling all deps for vendor bundle
+	const dependencies = Object.keys(require('./package.json').dependencies);
+
 	this.entry = {
 		app: './index.jsx',
-		vendor: [
-			'react',
-			'react-dom'
-		]
+		vendor: dependencies
 	};
 	this.output = {
 		path: path.resolve(__dirname, 'dist'),
@@ -31,7 +30,12 @@ function WebpackConfig(config) {
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: ['env', 'es2015', 'react']
+						presets: ['env', 'es2015', 'react'],
+						env: {
+							development:{
+								presets: ['react-hmre']
+							}
+						}
 					}
 				}
 			},
@@ -43,6 +47,7 @@ function WebpackConfig(config) {
 			}
 		]
 	};
+
 	this.plugins = [
 		new webpack.HotModuleReplacementPlugin(), // Enable HMR
 		new HtmlWebpackPlugin({
@@ -61,8 +66,11 @@ function WebpackConfig(config) {
 
 	if (isProduction) {
 		const ExtractTextPlugin = require('extract-text-webpack-plugin');
-		this.plugins.push(new ExtractTextPlugin('[name].css'));
 
+		this.plugins.push(new ExtractTextPlugin({
+			filename: '[name].css',
+			disable: !isProduction
+		}));
 		this.module.rules.push({
 			test: /(\.css$|\.postcss$|\.pcss$|\.sss$)/,
 			exclude: /node_modules/,
