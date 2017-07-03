@@ -1,16 +1,20 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-// const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const StyleLintPlugin = require('stylelint-webpack-plugin');
+const isProduction = process.env.NODE_ENV === 'production';
 
+/**
+ *  Webpack configuration object constructor
+ * @param config
+ * @constructor
+ */
 function WebpackConfig(config) {
+	// pulling all deps for vendor bundle
+	const dependencies = Object.keys(require('./package.json').dependencies);
+
 	this.entry = {
 		app: './index.jsx',
-		vendor: [
-			'react',
-			'react-dom'
-		]
+		vendor: dependencies
 	};
 	this.output = {
 		path: path.resolve(__dirname, 'dist'),
@@ -21,21 +25,17 @@ function WebpackConfig(config) {
 	this.module = {
 		rules: [
 			{
-				test: /(\.css$|\.postcss$|\.pcss$|\.sss$)/,
-				exclude: /node_modules/,
-				// use: ExtractTextPlugin.extract({
-				// 	fallback: 'style-loader',
-				// 	use: ['css-loader', 'postcss-loader']
-				// })
-				loaders: ['style-loader','css-loader', 'postcss-loader']
-			},
-			{
 				test: /(\.js$|\.jsx$)/,
 				exclude: /(node_modules|bower_components)/,
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: ['env', 'es2015', 'react']
+						presets: ['env', 'es2015', 'react'],
+						env: {
+							development:{
+								presets: ['react-hmre']
+							}
+						}
 					}
 				}
 			},
@@ -47,18 +47,46 @@ function WebpackConfig(config) {
 			}
 		]
 	};
+
 	this.plugins = [
-			new webpack.HotModuleReplacementPlugin(), // Enable HMR
-			new HtmlWebpackPlugin({
-				title: 'Javascript patterns',
-				favicon: 'favicon.ico',
-				template: './index.html'
-			}),
-			// new ExtractTextPlugin('[name].css')
-			new webpack.optimize.CommonsChunkPlugin({
-				names: ['vendor', 'manifest']
-			})
+		new webpack.HotModuleReplacementPlugin(), // Enable HMR
+		new HtmlWebpackPlugin({
+			title: 'Javascript patterns',
+			favicon: 'favicon.ico',
+			template: './index.html'
+		}),
+		new webpack.EnvironmentPlugin({
+			NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
+			DEBUG: false
+		}),
+		new webpack.optimize.CommonsChunkPlugin({
+			names: ['vendor', 'manifest']
+		})
 	];
+
+	if (isProduction) {
+		const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+		this.plugins.push(new ExtractTextPlugin({
+			filename: '[name].css',
+			disable: !isProduction
+		}));
+		this.module.rules.push({
+			test: /(\.css$|\.postcss$|\.pcss$|\.sss$)/,
+			exclude: /node_modules/,
+			use: ExtractTextPlugin.extract({
+				fallback: 'style-loader',
+				use: ['css-loader', 'postcss-loader']
+			})
+		})
+	} else {
+		this.module.rules.push({
+			test: /(\.css$|\.postcss$|\.pcss$|\.sss$)/,
+			exclude: /node_modules/,
+			loaders: ['style-loader', 'css-loader', 'postcss-loader']
+		})
+	}
+
 	this.devServer = {
 		hot: true,
 		contentBase: path.resolve(__dirname, 'dist'),
