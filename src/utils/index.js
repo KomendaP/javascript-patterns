@@ -1,4 +1,4 @@
-// import creational from './creational';
-import polyfills from './polyfills'
+import creational from './creational';
+import {polyfills} from './polyfills'
 
-export default {creational};
+export {creational, polyfills};

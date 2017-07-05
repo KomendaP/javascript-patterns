@@ -90,7 +90,8 @@ function WebpackConfig(config) {
 	this.devServer = {
 		hot: true,
 		contentBase: path.resolve(__dirname, 'dist'),
-		publicPath: '/'
+		publicPath: '/',
+		port: 3000
 	};
 }
 

@@ -34,6 +34,6 @@ ObjectName.prototype.save = function save(name) {
 			}
 		}, 500);
 	}
-}.apply(ObjectName);
+}.bind(ObjectName);
 
 export default ObjectName;
